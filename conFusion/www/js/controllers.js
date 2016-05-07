@@ -41,8 +41,9 @@ angular.module('conFusion.controllers', [])
   };
 })
 
-  .controller('MenuController', ['$scope', 'menuFactory', function ($scope, menuFactory) {
+  .controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function ($scope, menuFactory, baseURL) {
 
+    $scope.baseURL = baseURL;
     $scope.tab = 1;
     $scope.filtText = '';
     $scope.showDetails = false;
@@ -111,12 +112,18 @@ angular.module('conFusion.controllers', [])
     };
   }])
 
-  .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function ($scope, $stateParams, menuFactory) {
+  .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', function ($scope, $stateParams, menuFactory, baseURL) {
 
     var id = $stateParams.id;
     var baseSystem = 10;
+    var sortingTypes = [{value: "date", label: "Date: Oldest To Recent"}, {value: "-date", label: "Date : Recent To Oldest"},
+      {value: "rating", label: "Rating: Low to High"}, {value: "-rating", label: "Rating: High to Low"}, {value: "author", label: "Author: A to Z"},
+      {value: "-author", label: "Author: Z to A"}];
+
+    $scope.baseURL = baseURL;
     $scope.showDish = false;
     $scope.message = "Loading Dish...";
+    $scope.sortingTypes = sortingTypes;
 
     $scope.dish = menuFactory.getDishes().get({id: parseInt(id, baseSystem)},
       function (response) {

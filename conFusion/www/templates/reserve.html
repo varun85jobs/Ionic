@@ -15,7 +15,7 @@
             <option ng-repeat="n in [1,2,3,4,5,6]" value="{{n}}">{{n}}</option>
           </select>
         </label>
-        <div class="item item-toggle">
+        <li class="item item-toggle">
           Smoking?
           <label class="toggle toggle-assertive">
             <input type="checkbox" ng-model="reservation.smoking">
@@ -24,7 +24,7 @@
               </div>
             </div>
           </label>
-        </div>
+        </li>
         <label class="item item-input">
           <span class="input-label">Date</span>
           <input type="date" ng-model="reservation.date"  name="reservedate">

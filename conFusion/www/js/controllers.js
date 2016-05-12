@@ -68,7 +68,8 @@ angular.module('conFusion.controllers', [])
 
   })
 
-  .controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function ($scope, menuFactory, baseURL) {
+  .controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', '$ionicListDelegate', 'baseURL',
+    function ($scope, menuFactory, favoriteFactory, $ionicListDelegate, baseURL) {
 
     $scope.baseURL = baseURL;
     $scope.tab = 1;
@@ -109,6 +110,12 @@ angular.module('conFusion.controllers', [])
     $scope.toggleDetails = function () {
       $scope.showDetails = !$scope.showDetails;
     };
+
+    $scope.addFavorite = function(dishId){
+      favoriteFactory.addFavorite(dishId);
+      $ionicListDelegate.closeOptionButtons();
+    } ;
+
   }])
 
   .controller('ContactController', ['$scope', function ($scope) {
@@ -267,5 +274,35 @@ angular.module('conFusion.controllers', [])
     );
 
   }])
+
+  .controller('FavoriteController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', function ($scope, menuFactory, favoriteFactory, baseURL){
+
+    $scope.baseURL = baseURL;
+
+    $scope.shouldShowDelete = false;
+
+    $scope.dishes = menuFactory.getDishes().query(
+      function (response) {
+        $scope.dishes = response;
+        $scope.showMenu = true;
+      }, function (response) {
+        $scope.message = "Error: " + response.status + " " + response.statusText;
+      });
+    console.log($scope.dishes, $scope.favorites);
+
+    $scope.favorites = favoriteFactory.getFavorites();
+
+    $scope.deleteFavorite = function (index) {
+      favoriteFactory.deleteFavorite(index);
+      $scope.shouldShowDelete = false;
+    };
+
+    $scope.toggleDelete = function(){
+      $scope.shouldShowDelete = !$scope.shouldShowDelete;
+      console.log("shouldShowDelete : " + $scope.shouldShowDelete);
+    };
+
+  }])
+
 
 ;

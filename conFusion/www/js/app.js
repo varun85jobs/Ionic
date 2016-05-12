@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.services'])
+angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.services', 'conFusion.filters'])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
@@ -57,6 +57,16 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
         views: {
           'mainContent': {
             templateUrl: 'templates/contactus.html'
+          }
+        }
+      })
+
+      .state('app.favorite', {
+        url: '/favorite',
+        views: {
+          'mainContent': {
+            templateUrl: 'templates/favorite.html',
+            controller: 'FavoriteController'
           }
         }
       })

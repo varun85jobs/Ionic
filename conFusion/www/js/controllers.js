@@ -275,26 +275,54 @@ angular.module('conFusion.controllers', [])
 
   }])
 
-  .controller('FavoriteController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', function ($scope, menuFactory, favoriteFactory, baseURL){
+  .controller('FavoriteController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopup', '$ionicLoading', '$timeout',
+    function ($scope, menuFactory, favoriteFactory, baseURL, $ionicPopup, $ionicLoading, $timeout){
 
     $scope.baseURL = baseURL;
 
     $scope.shouldShowDelete = false;
 
+    $ionicLoading.show({
+      template: '<ion-spinner icon="crescent"></ion-spinner> Loading...'
+    });
+
     $scope.dishes = menuFactory.getDishes().query(
       function (response) {
         $scope.dishes = response;
         $scope.showMenu = true;
+
+        $timeout(function () {
+          $ionicLoading.hide();
+        }, 2000);
+
       }, function (response) {
         $scope.message = "Error: " + response.status + " " + response.statusText;
+        $timeout(function () {
+          $ionicLoading.hide();
+        }, 2000);
       });
-    console.log($scope.dishes, $scope.favorites);
+
+    console.log('Dishes and favorites', $scope.dishes, $scope.favorites);
 
     $scope.favorites = favoriteFactory.getFavorites();
 
     $scope.deleteFavorite = function (index) {
-      favoriteFactory.deleteFavorite(index);
-      $scope.shouldShowDelete = false;
+
+      var confirmPopup = $ionicPopup.confirm({
+        title: 'Confirm Delete',
+        template: 'Are you sure you want to delete this item?'
+      });
+
+      confirmPopup.then(function(result){
+        if(result){
+          console.log('Ok to delete')
+          favoriteFactory.deleteFavorite(index);
+        }else{
+          console.log('Canceled delete');
+        }
+
+        $scope.shouldShowDelete = false;
+      });
     };
 
     $scope.toggleDelete = function(){

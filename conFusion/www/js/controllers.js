@@ -10,7 +10,7 @@ angular.module('conFusion.controllers', [])
     //});
 
     // Form data for the login modal
-    $scope.loginData = localStorage.getObject('userinfo','{}');;
+    $scope.loginData = localStorage.getObject('userinfo','{}');
 
     // Create the login modal that we will use later
     $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -69,8 +69,8 @@ angular.module('conFusion.controllers', [])
 
   }])
 
-  .controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', '$ionicListDelegate', 'baseURL',
-    function ($scope, menuFactory, favoriteFactory, $ionicListDelegate, baseURL) {
+  .controller('MenuController', ['$scope', 'dishes', 'favoriteFactory', '$ionicListDelegate', 'baseURL',
+    function ($scope, dishes, favoriteFactory, $ionicListDelegate, baseURL) {
 
       $scope.baseURL = baseURL;
       $scope.tab = 1;
@@ -79,13 +79,7 @@ angular.module('conFusion.controllers', [])
       $scope.showMenu = false;
       $scope.message = "Loading Menu...";
 
-      $scope.dishes = menuFactory.query(
-        function (response) {
-          $scope.dishes = response;
-          $scope.showMenu = true;
-        }, function (response) {
-          $scope.message = "Error: " + response.status + " " + response.statusText;
-        });
+      $scope.dishes = dishes;
 
       $scope.select = function (setTab) {
         $scope.tab = setTab;
@@ -257,47 +251,27 @@ angular.module('conFusion.controllers', [])
   }])
 
 
-  .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', 'baseURL', function ($scope, menuFactory, corporateFactory, promotionFactory, baseURL) {
+  .controller('IndexController', ['$scope', 'dish', 'leader', 'promotion', 'baseURL', function ($scope, dish, leader, promotion, baseURL) {
 
     $scope.baseURL = baseURL;
     //Fetching Promotion
     $scope.showPromotion = false;
     $scope.showPromotionMessage = "Loading Promotion...";
 
-    $scope.promotion = promotionFactory.get({
-      id: 0
-    });
+    $scope.promotion = promotion;
 
     //Fetching leader
     $scope.showLeader = false;
     $scope.showLeaderMessage = "Loading Leadership information...";
 
-    $scope.leader = corporateFactory.getLeaders().get({id: 0})
-      .$promise.then(
-      function (response) {
-        $scope.leader = response;
-        $scope.showLeader = true;
-      },
-      function (response) {
-        $scope.showLeaderMessage = "Error: " + response.status + " " + response.statusText;
-      }
-    );
+    $scope.leader = leader;
 
 
     //Fetching featured Dish
     $scope.showDish = false;
     $scope.message = "Loading Dish...";
 
-    $scope.dish = menuFactory.get({id: 0})
-      .$promise.then(
-      function (response) {
-        $scope.dish = response;
-        $scope.showDish = true;
-      },
-      function (response) {
-        $scope.message = "Error: " + response.status + " " + response.statusText;
-      }
-    );
+    $scope.dish = dish;
   }])
 
 
@@ -307,7 +281,8 @@ angular.module('conFusion.controllers', [])
     $scope.showLeaders = false;
     $scope.showLeadersMessage = "Loading Leadership information...";
 
-    $scope.leaders = corporateFactory.getLeaders().query()
+    //Purposely keeping this way of calling query() method to remind myself later.
+    $scope.leaders = corporateFactory.query()
       .$promise.then(
       function (response) {
         $scope.leaders = response;
@@ -320,8 +295,8 @@ angular.module('conFusion.controllers', [])
 
   }])
 
-  .controller('FavoriteController', ['$scope', 'dishes', 'favorites', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopup', '$ionicLoading', '$timeout',
-    function ($scope, dishes, favorites, menuFactory, favoriteFactory, baseURL, $ionicPopup, $ionicLoading, $timeout) {
+  .controller('FavoriteController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicPopup', '$ionicLoading', '$timeout',
+    function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicPopup, $ionicLoading, $timeout) {
 
       $scope.baseURL = baseURL;
 
@@ -362,6 +337,4 @@ angular.module('conFusion.controllers', [])
       };
 
     }])
-
-
 ;

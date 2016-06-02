@@ -40,6 +40,12 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
       console.log('done');
       $rootScope.$broadcast('loading:hide');
     });
+
+    $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+      event.preventDefault();
+      var errorObject = { 'toState' : toState , 'fromState' : fromState , 'error' : error}
+      console.log('****' + JSON.stringify(errorObject));
+    });
   })
 
   .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -71,7 +77,12 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
         url: '/app',
         abstract: true,
         templateUrl: 'templates/sidebar.html',
-        controller: 'AppCtrl'
+        controller: 'AppCtrl',
+        resolve: {
+          dishes:  ['menuFactory', function(menuFactory){
+            return menuFactory.query();
+          }]
+        }
       })
 
       .state('app.home', {
@@ -79,7 +90,22 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
         views: {
           'mainContent': {
             templateUrl: 'templates/home.html',
-            controller: 'IndexController'
+            controller: 'IndexController',
+            resolve: {
+              dish:  ['menuFactory', function(menuFactory){
+                return menuFactory.get({id: 0});
+              }],
+
+              promotion : ['promotionFactory', function(promotionFactory){
+                return promotionFactory.get({id: 0});
+              }],
+
+              leader : ['corporateFactory', function(corporateFactory){
+                return corporateFactory.get({id: 0});
+              }]
+
+
+            }
           }
         }
       })
@@ -110,9 +136,6 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
             templateUrl: 'templates/favorite.html',
             controller: 'FavoriteController',
             resolve: {
-              dishes:  ['menuFactory', function(menuFactory){
-                return menuFactory.query();
-              }],
               favorites: ['favoriteFactory', function(favoriteFactory) {
                 return favoriteFactory.getFavorites();
               }]
